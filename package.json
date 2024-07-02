@@ -1,0 +1,36 @@
+{
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "RSS-project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bdcry/frontend-project-11.git"
+  },
+  "author": "bdcry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bdcry/frontend-project-11/issues"
+  },
+  "homepage": "https://github.com/bdcry/frontend-project-11#readme",
+  "devDependencies": {
+    "css-loader": "^7.1.2",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "html-webpack-plugin": "^5.6.0",
+    "postcss-loader": "^8.1.1",
+    "sass": "^1.77.6",
+    "sass-loader": "^14.2.1",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.92.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3"
+  }
+}
