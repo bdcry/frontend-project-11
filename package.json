@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/bdcry/frontend-project-11#readme",
   "devDependencies": {
+    "autoprefixer": "^10.4.19",
     "css-loader": "^7.1.2",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -31,6 +32,7 @@
     "webpack-dev-server": "^5.0.4"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3"
   }
 }
