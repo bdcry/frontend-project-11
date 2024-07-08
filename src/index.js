@@ -2,16 +2,26 @@ import './styles.scss';
 import 'bootstrap';
 import * as yup from 'yup';
 import keyBy from 'lodash/keyBy.js';
+import i18next from 'i18next';
 import initView from './view';
+import resources from './locales/index';
+
+const i18nextInstance = i18next.createInstance();
+await i18nextInstance.init({
+  lng: 'ru',
+  debug: true,
+  resources,
+});
 
 const createSchema = (feeds) => yup
   .string()
   .required()
-  .url('Ссылка должна быть валидным URL')
-  .notOneOf(feeds, 'RSS уже существует');
-  // notOneOf - принимает на вход массив запрещенных значений (фидов)
+  .url(i18nextInstance.t('errors.url'))
+  .notOneOf(feeds, i18nextInstance.t('errors.notOneOf'));
+// notOneOf - принимает на вход массив запрещенных значений (фидов)
 
 const state = {
+  currentLanguage: 'en',
   url: '',
   errors: [],
   feeds: [], // добавленные ссылки для проверки дубликатов
@@ -57,7 +67,7 @@ const handleSubmit = (e) => {
       watchedState.errors = [];
       feedback.classList.remove('text-danger');
       feedback.classList.add('text-success');
-      feedback.textContent = 'RSS успешно добавлен!';
+      feedback.textContent = i18nextInstance.t('messages.success');
     })
     .catch((err) => {
       watchedState.errors = err.message;
@@ -66,3 +76,27 @@ const handleSubmit = (e) => {
 
 input.addEventListener('input', handleInputChange);
 form.addEventListener('submit', handleSubmit);
+
+const initLocales = () => {
+  document.querySelector('title').textContent = i18nextInstance.t('title');
+  document.querySelector('h1').textContent = i18nextInstance.t('header');
+  document.querySelector('.lead').textContent = i18nextInstance.t('lead');
+  document.querySelector('label[for="url-input"]').textContent = i18nextInstance.t('url_input');
+  document.querySelector('button[type="submit"').textContent = i18nextInstance.t('button');
+  document.querySelector('.mt-2').textContent = i18nextInstance.t('example');
+  document.querySelector('.footer .text-center').childNodes[0].textContent = i18nextInstance.t('created_by');
+};
+
+initLocales();
+
+document.querySelector('label[data-lng="ru"]').addEventListener('click', () => {
+  i18nextInstance.changeLanguage('ru');
+  watchedState.currentLanguage = 'ru';
+  initLocales();
+});
+
+document.querySelector('label[data-lng="en"]').addEventListener('click', () => {
+  i18nextInstance.changeLanguage('en');
+  watchedState.currentLanguage = 'en';
+  initLocales();
+});
