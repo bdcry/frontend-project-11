@@ -3,6 +3,7 @@ import 'bootstrap';
 import * as yup from 'yup';
 import keyBy from 'lodash/keyBy.js';
 import i18next from 'i18next';
+import axios from 'axios';
 import render from './view';
 import resources from './locales/index';
 
@@ -12,6 +13,13 @@ await i18nextInstance.init({
   debug: true,
   resources,
 });
+
+const fetchRSS = (url) => axios
+  .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`)
+  .then((response) => response.data.contents)
+  .catch((error) => {
+    console.log('Error fetching RSS data:', error);
+  });
 
 const createSchema = (feeds) => yup
   .string()
@@ -54,21 +62,28 @@ const handleSubmit = (e) => {
   validate(url, watchedState.feeds)
     .then((errors) => {
       // Проверка валидации
-      // если что-то не так, то будем собирать ошибки в копии состояния
+      // если что-то не так, то будем собирать ошибки в состоянии
       if (Object.keys(errors).length > 0) {
         watchedState.errors = Object.values(errors).map((err) => err.message);
         return;
       }
 
-      // Если все ок, то пушим в фиды наш RSS
-      watchedState.feeds.push(url);
-      watchedState.url = '';
-      input.value = '';
-      input.focus();
-      watchedState.errors = [];
-      feedback.classList.remove('text-danger');
-      feedback.classList.add('text-success');
-      feedback.textContent = i18nextInstance.t('messages.success');
+      fetchRSS(url)
+        .then((fetchData) => {
+          console.log('RSS fetched data:', fetchData);
+          // Если все ок, то пушим в фиды наш RSS
+          watchedState.feeds.push(url);
+          watchedState.url = '';
+          input.value = '';
+          input.focus();
+          watchedState.errors = [];
+          feedback.classList.remove('text-danger');
+          feedback.classList.add('text-success');
+          feedback.textContent = i18nextInstance.t('messages.success');
+        })
+        .catch((error) => {
+          watchedState.errors = error.message;
+        });
     })
     .catch((err) => {
       watchedState.errors = err.message;
