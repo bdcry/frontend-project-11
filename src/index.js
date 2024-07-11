@@ -6,6 +6,7 @@ import i18next from 'i18next';
 import axios from 'axios';
 import render from './view';
 import resources from './locales/index';
+import parseRSS from './parser';
 
 const i18nextInstance = i18next.createInstance();
 await i18nextInstance.init({
@@ -33,6 +34,7 @@ const state = {
   url: '',
   errors: [],
   feeds: [], // добавленные ссылки для проверки дубликатов
+  posts: [],
 };
 
 const input = document.getElementById('url-input');
@@ -70,9 +72,15 @@ const handleSubmit = (e) => {
 
       fetchRSS(url)
         .then((fetchData) => {
-          console.log('RSS fetched data:', fetchData);
-          // Если все ок, то пушим в фиды наш RSS
-          watchedState.feeds.push(url);
+          const parsedData = parseRSS(fetchData);
+          console.log('Parsed RSS data:', parsedData);
+          const { title, description, posts } = parsedData;
+          // Если все ок, то пушим в фиды и в посты наши данные
+          const feed = { title, description, link: url };
+          watchedState.feeds.push(feed);
+          watchedState.posts.push(posts);
+          console.log('Feeds', state.feeds);
+          console.log('Posts', state.posts);
           watchedState.url = '';
           input.value = '';
           input.focus();
