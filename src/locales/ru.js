@@ -10,6 +10,7 @@ export default {
     errors: {
       url: 'Ссылка должна быть валидным URL',
       notOneOf: 'RSS уже существует',
+      parserError: 'Ресурс не содержит валидный RSS',
     },
     messages: {
       success: 'RSS успешно добавлен!',

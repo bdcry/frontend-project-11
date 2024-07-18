@@ -1,6 +1,14 @@
-const parseRSS = (fetchData) => {
+const parseRSS = (fetchData, i18nextInstance, watchedState) => {
+  const state = watchedState;
   const parser = new DOMParser();
   const doc = parser.parseFromString(fetchData, 'application/xml');
+  const parserError = doc.querySelector('parsererror');
+  if (parserError) {
+    state.errors = i18nextInstance.t('errors.parserError');
+    return null;
+    // возвращаем null, чтобы сразу прокидывать ошибку
+    // в Handlesubmit, после парсинга
+  }
 
   // Извлекаем основную информацию для фидов
   const channel = doc.querySelector('channel');

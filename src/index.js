@@ -26,7 +26,7 @@ const createSchema = (feeds) => yup
   .string()
   .required()
   .url(i18nextInstance.t('errors.url'))
-  .notOneOf(feeds, i18nextInstance.t('errors.notOneOf'));
+  .notOneOf(feeds.map(((feed) => feed.link)), i18nextInstance.t('errors.notOneOf'));
 // notOneOf - принимает на вход массив запрещенных значений (фидов)
 
 const state = {
@@ -72,22 +72,25 @@ const handleSubmit = (e) => {
 
       fetchRSS(url)
         .then((fetchData) => {
-          const parsedData = parseRSS(fetchData);
-          console.log('Parsed RSS data:', parsedData);
-          const { title, description, posts } = parsedData;
-          // Если все ок, то пушим в фиды и в посты наши данные
-          const feed = { title, description, link: url };
-          watchedState.feeds.push(feed);
-          watchedState.posts.push(posts);
-          console.log('Feeds', state.feeds);
-          console.log('Posts', state.posts);
-          watchedState.url = '';
-          input.value = '';
-          input.focus();
-          watchedState.errors = [];
-          feedback.classList.remove('text-danger');
-          feedback.classList.add('text-success');
-          feedback.textContent = i18nextInstance.t('messages.success');
+          const parsedData = parseRSS(fetchData, i18nextInstance, watchedState);
+          if (parsedData) {
+            console.log('Parsed RSS data:', parsedData);
+            const { title, description, posts } = parsedData;
+            // Если все ок, то пушим в фиды и в посты наши данные
+            const feed = { title, description, link: url };
+            watchedState.feeds.push(feed);
+            watchedState.posts.push(posts);
+            console.log('Feeds', state.feeds);
+            console.log('Posts', state.posts);
+            console.log('Состояние', state);
+            watchedState.url = '';
+            input.value = '';
+            input.focus();
+            watchedState.errors = [];
+            feedback.classList.remove('text-danger');
+            feedback.classList.add('text-success');
+            feedback.textContent = i18nextInstance.t('messages.success');
+          }
         })
         .catch((error) => {
           watchedState.errors = error.message;
