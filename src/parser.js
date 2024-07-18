@@ -7,7 +7,7 @@ const parseRSS = (fetchData, i18nextInstance, watchedState) => {
     state.errors = i18nextInstance.t('errors.parserError');
     return null;
     // возвращаем null, чтобы сразу прокидывать ошибку
-    // в Handlesubmit, после парсинга
+    // в обработчик Sumbit'a, после парсинга
   }
 
   // Извлекаем основную информацию для фидов
