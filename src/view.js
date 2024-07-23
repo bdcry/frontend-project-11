@@ -124,7 +124,14 @@ const renderPosts = (state, i18nextInstance) => {
   ulPost.classList.add('list-group', 'border-0', 'rounded-0');
   posts.forEach((post) => {
     const liPost = document.createElement('li');
-    liPost.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+    liPost.classList.add(
+      'list-group-item',
+      'd-flex',
+      'justify-content-between',
+      'align-items-start',
+      'border-0',
+      'border-end-0',
+    );
 
     const a = document.createElement('a');
     a.setAttribute('href', post.link);
