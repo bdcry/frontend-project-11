@@ -4,9 +4,12 @@ import * as yup from 'yup';
 import keyBy from 'lodash/keyBy.js';
 import i18next from 'i18next';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 import render from './view';
 import resources from './locales/index';
 import parseRSS from './parser';
+
+const generateId = () => uuidv4();
 
 const i18nextInstance = i18next.createInstance();
 await i18nextInstance.init({
@@ -72,7 +75,7 @@ const handleSubmit = (e) => {
 
       fetchRSS(url)
         .then((fetchData) => {
-          const parsedData = parseRSS(fetchData, i18nextInstance, watchedState);
+          const parsedData = parseRSS(fetchData, i18nextInstance, watchedState, generateId);
           if (parsedData) {
             console.log('Parsed RSS data:', parsedData);
             const { title, description, posts } = parsedData;
