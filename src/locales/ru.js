@@ -7,6 +7,8 @@ export default {
     button: 'Добавить',
     example: 'Пример: https://lorem-rss.hexlet.app/feed',
     created_by: 'создано ',
+    feed_title: 'Фиды',
+    post_title: 'Посты',
     errors: {
       url: 'Ссылка должна быть валидным URL',
       notOneOf: 'RSS уже существует',

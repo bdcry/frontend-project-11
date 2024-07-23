@@ -79,7 +79,9 @@ const handleSubmit = (e) => {
             // Если все ок, то пушим в фиды и в посты наши данные
             const feed = { title, description, link: url };
             watchedState.feeds.push(feed);
-            watchedState.posts.push(posts);
+            watchedState.posts.push(...posts.flatMap((postArray) => postArray));
+            // разбиваем данные на отдельные части, тк без спред оператора
+            // приходит вложенный массив, который мы не можем посмотреть
             console.log('Feeds', state.feeds);
             console.log('Posts', state.posts);
             console.log('Состояние', state);
