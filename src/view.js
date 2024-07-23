@@ -22,6 +22,7 @@ const renderLocales = (i18nextInstance) => {
   document.querySelector('button[type="submit"').textContent = i18nextInstance.t('button');
   document.querySelector('.mt-2').textContent = i18nextInstance.t('example');
   document.querySelector('.footer .text-center').childNodes[0].textContent = i18nextInstance.t('created_by');
+
   const feedTitle = document.querySelector('.feeds .card-title.h4');
   if (feedTitle) {
     feedTitle.textContent = i18nextInstance.t('feed_title');
@@ -29,6 +30,15 @@ const renderLocales = (i18nextInstance) => {
   const postTitle = document.querySelector('.posts .card-title.h4');
   if (postTitle) {
     postTitle.textContent = i18nextInstance.t('post_title');
+  }
+
+  const modalFooter = document.querySelector('.modal-footer .full-article');
+  if (modalFooter) {
+    modalFooter.textContent = i18nextInstance.t('modal_readFull');
+  }
+  const closeBtnFooter = document.querySelector('.modal-footer .btn.btn-secondary');
+  if (closeBtnFooter) {
+    closeBtnFooter.textContent = i18nextInstance.t('modal_closeBtn');
   }
 };
 
@@ -83,6 +93,16 @@ const renderFeeds = (state, i18nextInstance) => {
   divContainer.append(divFeedCard);
 };
 
+const renderModal = (post) => {
+  const modalTitle = document.querySelector('.modal-title');
+  const modalBody = document.querySelector('.modal-body');
+  const modalFooter = document.querySelector('.modal-footer .full-article');
+
+  modalTitle.textContent = post.title;
+  modalBody.textContent = post.description;
+  modalFooter.setAttribute('href', post.link);
+};
+
 const renderPosts = (state, i18nextInstance) => {
   const { posts } = state;
   const divContainer = document.querySelector('.posts');
@@ -115,6 +135,9 @@ const renderPosts = (state, i18nextInstance) => {
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
     button.textContent = 'Просмотр';
+    button.addEventListener('click', () => {
+      renderModal(post);
+    });
 
     liPost.append(a);
     liPost.append(button);

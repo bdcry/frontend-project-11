@@ -9,6 +9,8 @@ export default {
     created_by: 'created by ',
     feed_title: 'Feeds',
     post_title: 'Posts',
+    modal_readFull: 'Read full article',
+    modal_closeBtn: 'Close',
     errors: {
       url: 'The URL must be a valid URL',
       notOneOf: 'RSS already exists',
