@@ -32,6 +32,12 @@ const renderLocales = (i18nextInstance) => {
     postTitle.textContent = i18nextInstance.t('post_title');
   }
 
+  const postViewBtn = document.querySelectorAll('[data-bs-target="#modal"]');
+  postViewBtn.forEach((button) => {
+    const viewBtn = button;
+    viewBtn.textContent = i18nextInstance.t('post_view');
+  });
+
   const modalFooter = document.querySelector('.modal-footer .full-article');
   if (modalFooter) {
     modalFooter.textContent = i18nextInstance.t('modal_readFull');
@@ -134,7 +140,7 @@ const renderPosts = (state, i18nextInstance) => {
     button.setAttribute('data-id', post.id);
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
-    button.textContent = 'Просмотр';
+    button.textContent = i18nextInstance.t('post_view');
     button.addEventListener('click', () => {
       renderModal(post);
     });

@@ -9,6 +9,7 @@ export default {
     created_by: 'created by ',
     feed_title: 'Feeds',
     post_title: 'Posts',
+    post_view: 'View',
     modal_readFull: 'Read full article',
     modal_closeBtn: 'Close',
     errors: {

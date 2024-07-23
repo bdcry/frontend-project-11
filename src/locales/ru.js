@@ -9,6 +9,7 @@ export default {
     created_by: 'создано ',
     feed_title: 'Фиды',
     post_title: 'Посты',
+    post_view: 'Просмотр',
     modal_readFull: 'Читать полностью',
     modal_closeBtn: 'Закрыть',
     errors: {
