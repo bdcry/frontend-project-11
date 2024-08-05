@@ -29,7 +29,10 @@ const createSchema = (feeds) => yup
   .string()
   .required()
   .url(i18nextInstance.t('errors.url'))
-  .notOneOf(feeds.map(((feed) => feed.link)), i18nextInstance.t('errors.notOneOf'));
+  .notOneOf(
+    feeds.map((feed) => feed.link),
+    i18nextInstance.t('errors.notOneOf'),
+  );
 // notOneOf - принимает на вход массив запрещенных значений (фидов)
 
 const state = {
@@ -59,12 +62,49 @@ const validate = (url, feeds) => {
     .catch((e) => keyBy(e.inner, 'path'));
 };
 
+const checkForUpdates = () => {
+  const { posts, feeds } = state;
+
+  const fetchFeedUpdates = (feed) => {
+    fetchRSS(feed.link)
+      .then((fetchData) => {
+        const parsedData = parseRSS(
+          fetchData,
+          i18nextInstance,
+          watchedState,
+          generateId,
+        );
+        if (parsedData) {
+          const { posts: newPosts } = parsedData;
+          const actualTitles = posts.map((post) => post.title);
+          const filteredPosts = newPosts.filter((newPost) => !actualTitles.includes(newPost.title));
+          console.log(actualTitles);
+          console.log('Выводим новые посты:', newPosts);
+          console.log('Выводим отфильтрованные посты:', filteredPosts);
+
+          if (filteredPosts.length > 0) {
+            watchedState.posts.push(...filteredPosts);
+            // console.log('Выводим состояние с новыми постами:', watchedState.posts);
+          }
+        }
+      })
+      .catch((err) => {
+        console.log('Error fetching feed updates:', err);
+      });
+  };
+  feeds.forEach((feed) => {
+    fetchFeedUpdates(feed);
+  });
+
+  setTimeout(checkForUpdates, 5000);
+};
+
 const handleSubmit = (e) => {
   e.preventDefault();
 
-  const { url } = watchedState;
+  const { url, feeds } = watchedState;
 
-  validate(url, watchedState.feeds)
+  validate(url, feeds)
     .then((errors) => {
       // Проверка валидации
       // если что-то не так, то будем собирать ошибки в состоянии
@@ -75,13 +115,18 @@ const handleSubmit = (e) => {
 
       fetchRSS(url)
         .then((fetchData) => {
-          const parsedData = parseRSS(fetchData, i18nextInstance, watchedState, generateId);
+          const parsedData = parseRSS(
+            fetchData,
+            i18nextInstance,
+            watchedState,
+            generateId,
+          );
           if (parsedData) {
             console.log('Parsed RSS data:', parsedData);
             const { title, description, posts } = parsedData;
             // Если все ок, то пушим в фиды и в посты наши данные
             const feed = { title, description, link: url };
-            watchedState.feeds.push(feed);
+            feeds.push(feed);
             watchedState.posts.push(...posts.flatMap((postArray) => postArray));
             // разбиваем данные на отдельные части, тк без спред оператора
             // приходит вложенный массив, который мы не можем посмотреть
@@ -95,6 +140,7 @@ const handleSubmit = (e) => {
             feedback.classList.remove('text-danger');
             feedback.classList.add('text-success');
             feedback.textContent = i18nextInstance.t('messages.success');
+            checkForUpdates();
           }
         })
         .catch((error) => {
