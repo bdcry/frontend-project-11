@@ -78,7 +78,7 @@ const checkForUpdates = () => {
           const { posts: newPosts } = parsedData;
           const actualTitles = posts.map((post) => post.title);
           const filteredPosts = newPosts.filter((newPost) => !actualTitles.includes(newPost.title));
-          console.log(actualTitles);
+          // console.log(actualTitles);
           console.log('Выводим новые посты:', newPosts);
           console.log('Выводим отфильтрованные посты:', filteredPosts);
 
@@ -102,6 +102,9 @@ const checkForUpdates = () => {
 const handleSubmit = (e) => {
   e.preventDefault();
 
+  const sumbitDocBtn = form.querySelector('button[type="submit"]');
+  sumbitDocBtn.disabled = true;
+
   const { url, feeds } = watchedState;
 
   validate(url, feeds)
@@ -110,6 +113,7 @@ const handleSubmit = (e) => {
       // если что-то не так, то будем собирать ошибки в состоянии
       if (Object.keys(errors).length > 0) {
         watchedState.errors = Object.values(errors).map((err) => err.message);
+        sumbitDocBtn.disabled = false;
         return;
       }
 
@@ -130,9 +134,9 @@ const handleSubmit = (e) => {
             watchedState.posts.push(...posts.flatMap((postArray) => postArray));
             // разбиваем данные на отдельные части, тк без спред оператора
             // приходит вложенный массив, который мы не можем посмотреть
-            console.log('Feeds', state.feeds);
-            console.log('Posts', state.posts);
-            console.log('Состояние', state);
+            // console.log('Feeds', state.feeds);
+            // console.log('Posts', state.posts);
+            // console.log('Состояние', state);
             watchedState.url = '';
             input.value = '';
             input.focus();
@@ -141,14 +145,19 @@ const handleSubmit = (e) => {
             feedback.classList.add('text-success');
             feedback.textContent = i18nextInstance.t('messages.success');
             checkForUpdates();
+            setTimeout(() => {
+              sumbitDocBtn.disabled = false;
+            }, '3000');
           }
         })
         .catch((error) => {
           watchedState.errors = error.message;
+          sumbitDocBtn.disabled = false;
         });
     })
     .catch((err) => {
       watchedState.errors = err.message;
+      sumbitDocBtn.disabled = false;
     });
 };
 
