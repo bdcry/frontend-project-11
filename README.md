@@ -30,7 +30,7 @@
 
 ## Скриншот
 
-![RSS Aggregator Screenshot](./src/images/screenshotForREADME.png);
+![RSS Aggregator Screenshot](./src/images/screenshotForREADME.png)
 
 ## Установка
 
@@ -83,4 +83,5 @@ make build
 ```
 
 ## Проект также доступен по следующей ссылке:
+
 [RSS Aggregator на Vercel](https://frontend-project-11-bdcry.vercel.app/) - **Посетите развернутую версию проекта на Vercel**
