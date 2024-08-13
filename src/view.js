@@ -123,6 +123,7 @@ const renderPosts = (state, i18nextInstance) => {
   const ulPost = document.createElement('ul');
   ulPost.classList.add('list-group', 'border-0', 'rounded-0');
   posts.forEach((post) => {
+    const postAlone = post;
     const liPost = document.createElement('li');
     liPost.classList.add(
       'list-group-item',
@@ -134,22 +135,31 @@ const renderPosts = (state, i18nextInstance) => {
     );
 
     const a = document.createElement('a');
-    a.setAttribute('href', post.link);
-    a.classList.add('fw-bold');
-    a.setAttribute('data-id', post.id);
+    a.setAttribute('href', postAlone.link);
+    if (postAlone.read) {
+      a.classList.add('fw-normal', 'link-secondary');
+    } else {
+      a.classList.add('fw-bold');
+    }
+    a.setAttribute('data-id', postAlone.id);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
-    a.textContent = post.title;
+    a.textContent = postAlone.title;
 
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
     button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-    button.setAttribute('data-id', post.id);
+    button.setAttribute('data-id', postAlone.id);
     button.setAttribute('data-bs-toggle', 'modal');
     button.setAttribute('data-bs-target', '#modal');
     button.textContent = i18nextInstance.t('post_view');
     button.addEventListener('click', () => {
       renderModal(post);
+      // отмечаем пост , как просмотренный
+      // и добавляем статус true в состояние
+      postAlone.read = true;
+      a.classList.remove('fw-bold');
+      a.classList.add('fw-normal', 'link-secondary');
     });
 
     liPost.append(a);
