@@ -49,10 +49,10 @@ const form = document.querySelector('.rss-form');
 const feedback = document.querySelector('.feedback');
 const elements = { input, form, feedback };
 
-const watchedState = render(state, elements, i18nextInstance);
+const view = render(state, elements, i18nextInstance);
 
 const handleInputChange = (e) => {
-  watchedState.url = e.target.value;
+  view.url = e.target.value;
 };
 
 const validate = (url, feeds) => {
@@ -72,7 +72,7 @@ const checkForUpdates = () => {
         const parsedData = parseRSS(
           fetchData,
           i18nextInstance,
-          watchedState,
+          view,
           generateId,
         );
         if (parsedData) {
@@ -84,8 +84,8 @@ const checkForUpdates = () => {
           console.log('Выводим отфильтрованные посты:', filteredPosts);
 
           if (filteredPosts.length > 0) {
-            watchedState.posts.push(...filteredPosts);
-            // console.log('Выводим состояние с новыми постами:', watchedState.posts);
+            view.posts.push(...filteredPosts);
+            // console.log('Выводим состояние с новыми постами:', view.posts);
           }
         }
       })
@@ -106,14 +106,14 @@ const handleSubmit = (e) => {
   const sumbitDocBtn = form.querySelector('button[type="submit"]');
   sumbitDocBtn.disabled = true;
 
-  const { url, feeds } = watchedState;
+  const { url, feeds } = view;
 
   validate(url, feeds)
     .then((errors) => {
       // Проверка валидации
       // если что-то не так, то будем собирать ошибки в состоянии
       if (Object.keys(errors).length > 0) {
-        watchedState.errors = Object.values(errors).map((err) => err.message);
+        view.errors = Object.values(errors).map((err) => err.message);
         sumbitDocBtn.disabled = false;
         return;
       }
@@ -123,7 +123,7 @@ const handleSubmit = (e) => {
           const parsedData = parseRSS(
             fetchData,
             i18nextInstance,
-            watchedState,
+            view,
             generateId,
           );
           if (parsedData) {
@@ -132,16 +132,16 @@ const handleSubmit = (e) => {
             // Если все ок, то пушим в фиды и в посты наши данные
             const feed = { title, description, link: url };
             feeds.push(feed);
-            watchedState.posts.push(...posts.flatMap((postArray) => postArray));
+            view.posts.push(...posts.flatMap((postArray) => postArray));
             // разбиваем данные на отдельные части, тк без спред оператора
             // приходит вложенный массив, который мы не можем посмотреть
             // console.log('Feeds', state.feeds);
             // console.log('Posts', state.posts);
             // console.log('Состояние', state);
-            watchedState.url = '';
+            view.url = '';
             input.value = '';
             input.focus();
-            watchedState.errors = [];
+            view.errors = [];
             feedback.classList.remove('text-danger');
             feedback.classList.add('text-success');
             feedback.textContent = i18nextInstance.t('messages.success');
@@ -152,12 +152,12 @@ const handleSubmit = (e) => {
           }
         })
         .catch((error) => {
-          watchedState.errors = error.message;
+          view.errors = error.message;
           sumbitDocBtn.disabled = false;
         });
     })
     .catch((err) => {
-      watchedState.errors = err.message;
+      view.errors = err.message;
       sumbitDocBtn.disabled = false;
     });
 };
@@ -167,10 +167,10 @@ form.addEventListener('submit', handleSubmit);
 
 document.querySelector('label[data-lng="ru"]').addEventListener('click', () => {
   i18nextInstance.changeLanguage('ru');
-  watchedState.currentLanguage = 'ru';
+  view.currentLanguage = 'ru';
 });
 
 document.querySelector('label[data-lng="en"]').addEventListener('click', () => {
   i18nextInstance.changeLanguage('en');
-  watchedState.currentLanguage = 'en';
+  view.currentLanguage = 'en';
 });
