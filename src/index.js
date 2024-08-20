@@ -19,10 +19,11 @@ await i18nextInstance.init({
 });
 
 const fetchRSS = (url) => axios
-  .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`)
+  .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}&disableCache=true`)
   .then((response) => response.data.contents)
   .catch((error) => {
     console.log('Error fetching RSS data:', error);
+    throw error;
   });
 
 const createSchema = (feeds) => yup
