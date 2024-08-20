@@ -28,7 +28,7 @@
 - Валидация данных форм с использованием библиотеки Yup.
 - Настройка сборки и автоматизации процессов с использованием Webpack.
 
-## Скриншот
+## RSS Aggregator Скриншот
 
 ![RSS Aggregator Screenshot](./src/images/screenshotForREADME.png)
 
