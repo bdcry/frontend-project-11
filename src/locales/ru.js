@@ -18,7 +18,7 @@ export default {
       parserError: 'Ресурс не содержит валидный RSS',
     },
     messages: {
-      success: 'RSS успешно добавлен!',
+      success: 'RSS успешно загружен',
     },
   },
 };
