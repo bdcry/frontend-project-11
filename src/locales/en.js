@@ -16,6 +16,7 @@ export default {
       url: 'The URL must be a valid URL',
       notOneOf: 'RSS already exists',
       parserError: 'The resource does not contain a valid RSS',
+      networkError: 'Network Error',
     },
     messages: {
       success: 'RSS successfully added!',

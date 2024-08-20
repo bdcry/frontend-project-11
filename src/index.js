@@ -23,7 +23,7 @@ const fetchRSS = (url) => axios
   .then((response) => response.data.contents)
   .catch((error) => {
     console.log('Error fetching RSS data:', error);
-    throw error;
+    throw new Error(i18nextInstance.t('errors.networkError'));
   });
 
 const createSchema = (feeds) => yup
