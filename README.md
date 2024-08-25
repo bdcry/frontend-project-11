@@ -2,6 +2,8 @@
 
 [![Actions Status](https://github.com/bdcry/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/bdcry/frontend-project-11/actions) - Hexlet tests and linter status.
 
+[![🎨 Lint Check](https://github.com/bdcry/frontend-project-11/actions/workflows/lint-check.yml/badge.svg)](https://github.com/bdcry/frontend-project-11/actions/workflows/lint-check.yml) - Linter check status.
+
 [![Maintainability](https://api.codeclimate.com/v1/badges/e9ea316f1125afa68751/maintainability)](https://codeclimate.com/github/bdcry/frontend-project-11/maintainability) - Оценка Maintainability от Codeclimate.
 
 ## Описание проекта
