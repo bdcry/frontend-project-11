@@ -18,13 +18,24 @@ await i18nextInstance.init({
   resources,
 });
 
-const fetchRSS = (url) => axios
-  .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}&disableCache=true`)
-  .then((response) => response.data.contents)
-  .catch((error) => {
-    console.log('Error fetching RSS data:', error);
-    throw new Error(i18nextInstance.t('errors.networkError'));
-  });
+const createProxiedUrl = (url) => {
+  const proxyUrl = new URL('https://allorigins.hexlet.app/get');
+  proxyUrl.searchParams.set('url', url);
+  proxyUrl.searchParams.set('disableCache', 'true');
+  return proxyUrl.toString();
+};
+
+const fetchRSS = (url) => {
+  const proxiedUrl = createProxiedUrl(url);
+
+  return axios
+    .get(proxiedUrl)
+    .then((response) => response.data.contents)
+    .catch((error) => {
+      console.log('Error fetching RSS data:', error);
+      throw new Error(i18nextInstance.t('errors.networkError'));
+    });
+};
 
 const createSchema = (feeds) => yup
   .string()
