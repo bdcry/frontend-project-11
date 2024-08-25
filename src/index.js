@@ -104,7 +104,6 @@ const handleSubmit = (e) => {
   e.preventDefault();
 
   const sumbitDocBtn = form.querySelector('button[type="submit"]');
-  sumbitDocBtn.disabled = true;
 
   const { url, feeds } = view;
 
@@ -146,6 +145,7 @@ const handleSubmit = (e) => {
             feedback.classList.add('text-success');
             feedback.textContent = i18nextInstance.t('messages.success');
             checkForUpdates();
+            sumbitDocBtn.disabled = true;
             setTimeout(() => {
               sumbitDocBtn.disabled = false;
             }, '3000');
