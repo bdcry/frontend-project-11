@@ -50,6 +50,15 @@ const main = () => {
     );
   // notOneOf - принимает на вход массив запрещенных значений (фидов)
 
+  const handleRSSData = (rssData) => {
+    const { title, description, posts } = rssData;
+    const postsWithId = posts.map((post) => ({
+      ...post,
+      id: generateId(), // Добавляем id к каждому посту
+    }));
+    return { title, description, posts: postsWithId };
+  };
+
   const state = {
     currentLanguage: 'ru',
     url: '',
@@ -87,10 +96,10 @@ const main = () => {
             fetchData,
             i18nextInstance,
             view,
-            generateId,
           );
           if (parsedData) {
-            const { posts: newPosts } = parsedData;
+            const processedData = handleRSSData(parsedData);
+            const { posts: newPosts } = processedData;
             const actualTitles = posts.map((post) => post.title);
             const filteredPosts = newPosts.filter(
               (newPost) => !actualTitles.includes(newPost.title),
@@ -119,15 +128,6 @@ const main = () => {
 
     const { url, feeds } = view;
 
-    const handleRSSData = (rssData) => {
-      const { title, description, posts } = rssData;
-      const postsWithId = posts.map((post) => ({
-        ...post,
-        id: generateId(), // Добавляем id к каждому посту
-      }));
-      return { title, description, posts: postsWithId };
-    };
-
     validate(url, feeds)
       .then((errors) => {
         // Проверка валидации
@@ -145,8 +145,8 @@ const main = () => {
               i18nextInstance,
               view,
             );
-            const processedData = handleRSSData(parsedData);
-            if (processedData) {
+            if (parsedData) {
+              const processedData = handleRSSData(parsedData);
               const { title, description, posts } = processedData;
               // Если все ок, то пушим в фиды и в посты наши данные
               const feed = { title, description, link: url };
