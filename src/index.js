@@ -9,6 +9,9 @@ import render from './view';
 import resources from './locales/index';
 import parseRSS from './parser';
 
+const updateDelay = 5000;
+const buttonDisableDelay = 3000;
+
 const generateId = () => uuidv4();
 
 const i18nextInstance = i18next.createInstance();
@@ -103,7 +106,7 @@ const checkForUpdates = () => {
     fetchFeedUpdates(feed);
   });
 
-  setTimeout(checkForUpdates, 5000);
+  setTimeout(checkForUpdates, updateDelay);
 };
 
 const handleSubmit = (e) => {
@@ -150,7 +153,7 @@ const handleSubmit = (e) => {
             sumbitDocBtn.disabled = true;
             setTimeout(() => {
               sumbitDocBtn.disabled = false;
-            }, '3000');
+            }, buttonDisableDelay);
           }
         })
         .catch((error) => {
