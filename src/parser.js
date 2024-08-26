@@ -1,4 +1,4 @@
-const parseRSS = (fetchData, i18nextInstance, watchedState, generateId) => {
+const parseRSS = (fetchData, i18nextInstance, watchedState) => {
   const state = watchedState;
   const parser = new DOMParser();
   const doc = parser.parseFromString(fetchData, 'application/xml');
@@ -18,7 +18,6 @@ const parseRSS = (fetchData, i18nextInstance, watchedState, generateId) => {
   // Извлекаем информацию для постов
   const items = channel.querySelectorAll('item');
   const posts = [...items].map((item) => ({
-    id: generateId(),
     title: item.querySelector('title').textContent,
     description: item.querySelector('description').textContent,
     link: item.querySelector('link').textContent,

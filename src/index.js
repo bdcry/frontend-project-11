@@ -119,6 +119,15 @@ const main = () => {
 
     const { url, feeds } = view;
 
+    const handleRSSData = (rssData) => {
+      const { title, description, posts } = rssData;
+      const postsWithId = posts.map((post) => ({
+        ...post,
+        id: generateId(), // Добавляем id к каждому посту
+      }));
+      return { title, description, posts: postsWithId };
+    };
+
     validate(url, feeds)
       .then((errors) => {
         // Проверка валидации
@@ -135,10 +144,10 @@ const main = () => {
               fetchData,
               i18nextInstance,
               view,
-              generateId,
             );
-            if (parsedData) {
-              const { title, description, posts } = parsedData;
+            const processedData = handleRSSData(parsedData);
+            if (processedData) {
+              const { title, description, posts } = processedData;
               // Если все ок, то пушим в фиды и в посты наши данные
               const feed = { title, description, link: url };
               feeds.push(feed);
