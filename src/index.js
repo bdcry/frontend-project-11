@@ -92,7 +92,9 @@ const main = () => {
           if (parsedData) {
             const { posts: newPosts } = parsedData;
             const actualTitles = posts.map((post) => post.title);
-            const filteredPosts = newPosts.filter((newPost) => !actualTitles.includes(newPost.title));
+            const filteredPosts = newPosts.filter(
+              (newPost) => !actualTitles.includes(newPost.title),
+            );
 
             if (filteredPosts.length > 0) {
               view.posts.push(...filteredPosts);
