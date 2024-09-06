@@ -140,12 +140,8 @@ const main = () => {
 
         fetchRSS(url)
           .then((fetchData) => {
-            const parsedData = parseRSS(
-              fetchData,
-              i18nextInstance,
-              view,
-            );
-            if (parsedData) {
+            try {
+              const parsedData = parseRSS(fetchData);
               const processedData = handleRSSData(parsedData);
               const { title, description, posts } = processedData;
               // Если все ок, то пушим в фиды и в посты наши данные
@@ -166,6 +162,8 @@ const main = () => {
               setTimeout(() => {
                 sumbitDocBtn.disabled = false;
               }, buttonDisableDelay);
+            } catch (error) {
+              view.errors = i18nextInstance.t('errors.parserError');
             }
           })
           .catch((error) => {
