@@ -5,9 +5,9 @@ import keyBy from 'lodash/keyBy.js';
 import i18next from 'i18next';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import render from './view';
-import resources from './locales/index';
-import parseRSS from './parser';
+import render from './view.js';
+import resources from './locales/index.js';
+import parseRSS from './parser.js';
 
 const updateDelay = 5000;
 const buttonDisableDelay = 3000;
