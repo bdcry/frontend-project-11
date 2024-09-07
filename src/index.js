@@ -95,36 +95,33 @@ const main = () => {
   const checkForUpdates = () => {
     const { posts, feeds } = initialState;
 
-    const fetchFeedUpdates = (feed) => {
-      fetchRSS(feed.link)
-        .then((fetchData) => {
-          const parsedData = parseRSS(
-            fetchData,
-            i18nextInstance,
-            state,
-          );
-          if (parsedData) {
-            const processedData = handleRSSData(parsedData);
-            const { posts: newPosts } = processedData;
-            const actualTitles = posts.map((post) => post.title);
-            const filteredPosts = newPosts.filter(
-              (newPost) => !actualTitles.includes(newPost.title),
-            );
+    const fetchFeedUpdates = (feed) => fetchRSS(feed.link)
+      .then((fetchData) => {
+        const parsedData = parseRSS(fetchData);
+        const processedData = handleRSSData(parsedData);
+        const { posts: newPosts } = processedData;
+        const actualTitles = posts.map((post) => post.title);
+        const filteredPosts = newPosts.filter(
+          (newPost) => !actualTitles.includes(newPost.title),
+        );
+        if (filteredPosts.length > 0) {
+          state.posts.push(...filteredPosts);
+        }
+      })
+      .catch((err) => {
+        state.errors = err.response;
+        state.status = 'error';
+      });
 
-            if (filteredPosts.length > 0) {
-              state.posts.push(...filteredPosts);
-            }
-          }
-        })
-        .catch((err) => {
-          state.errors = err.response;
-        });
-    };
-    feeds.forEach((feed) => {
-      fetchFeedUpdates(feed);
-    });
+    const promises = feeds.map((feed) => fetchFeedUpdates(feed));
 
-    setTimeout(checkForUpdates, updateDelay);
+    Promise.all(promises)
+      .then(() => {
+        setTimeout(checkForUpdates, updateDelay);
+      })
+      .catch((err) => {
+        throw new Error(`Error updating feeds: ${err}`);
+      });
   };
 
   const handleSubmit = (e) => {
