@@ -199,7 +199,7 @@ const handleProcessState = (state, elements, i18nextInstance) => {
 
       break;
 
-    case 'error':
+    case 'failed':
       submitButton.disabled = false;
       input.disabled = false;
 

@@ -110,7 +110,7 @@ const main = () => {
       })
       .catch((err) => {
         state.errors = err.response;
-        state.status = 'error';
+        state.status = 'failed';
       });
 
     const promises = feeds.map((feed) => fetchFeedUpdates(feed));
@@ -133,43 +133,32 @@ const main = () => {
 
     validate(url, feeds)
       .then((errors) => {
-        // Проверка валидации
-        // если что-то не так, то будем собирать ошибки в состоянии
         if (Object.keys(errors).length > 0) {
           state.errors = Object.values(errors).map((err) => err.message);
-          state.status = 'error';
-          return;
+          state.status = 'failed';
+          return Promise.reject(new Error('Validation Error'));
         }
 
-        fetchRSS(url)
-          .then((fetchData) => {
-            try {
-              const parsedData = parseRSS(fetchData);
-              const processedData = handleRSSData(parsedData);
-              const { title, description, posts } = processedData;
-              // Если все ок, то пушим в фиды и в посты наши данные
-              const feed = { title, description, link: url };
-              feeds.push(feed);
-              state.posts.push(...posts.flatMap((postArray) => postArray));
-              // разбиваем данные на отдельные части, тк без спред оператора
-              // приходит вложенный массив, который мы не можем посмотреть
-              state.url = '';
-              state.errors = [];
-              state.status = 'success';
-              checkForUpdates();
-            } catch (error) {
-              state.errors = i18nextInstance.t('errors.parserError');
-              state.status = 'error';
-            }
-          })
-          .catch((error) => {
-            state.errors = error.message;
-            state.status = 'error';
-          });
+        return fetchRSS(url);
       })
-      .catch((err) => {
-        state.errors = err.message;
-        state.status = 'error';
+      .then((fetchData) => {
+        const parsedData = parseRSS(fetchData);
+        const processedData = handleRSSData(parsedData);
+        const { title, description, posts } = processedData;
+
+        const feed = { title, description, link: url };
+        state.feeds.push(feed);
+        const processedPosts = posts.flatMap((postArray) => postArray);
+        state.posts.push(processedPosts);
+
+        state.url = '';
+        state.errors = [];
+        state.status = 'success';
+        checkForUpdates();
+      })
+      .catch((error) => {
+        state.errors = error.message || i18nextInstance.t('errors.parserError');
+        state.status = 'failed';
       });
   };
 
