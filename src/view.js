@@ -172,12 +172,18 @@ const renderPosts = (state, i18nextInstance) => {
   divContainer.append(divPostCard);
 };
 
-const handleProcessState = (state, elements) => {
-  const { input, submitButton } = elements;
+const handleProcessState = (state, elements, i18nextInstance) => {
+  const { input, submitButton, feedback } = elements;
   switch (state.status) {
     case 'success':
       submitButton.disabled = false;
       input.disabled = false;
+
+      input.value = '';
+      input.focus();
+      feedback.classList.remove('text-danger');
+      feedback.classList.add('text-success');
+      feedback.textContent = i18nextInstance.t('messages.success');
       input.removeAttribute('readonly');
 
       break;
@@ -185,7 +191,10 @@ const handleProcessState = (state, elements) => {
     case 'loading':
       submitButton.disabled = true;
       input.disabled = true;
+      feedback.innerHTML = '';
 
+      feedback.classList.remove('text-danger');
+      feedback.classList.remove('text-success');
       input.setAttribute('readonly', true);
 
       break;
@@ -194,6 +203,7 @@ const handleProcessState = (state, elements) => {
       submitButton.disabled = false;
       input.disabled = false;
 
+      input.focus();
       input.removeAttribute('readonly');
 
       break;
@@ -220,7 +230,7 @@ const render = (state, elements, i18nextInstance) => {
         renderPosts(state, i18nextInstance);
         break;
       case 'status':
-        handleProcessState(state, elements);
+        handleProcessState(state, elements, i18nextInstance);
         break;
       default:
         break;

@@ -154,12 +154,7 @@ const main = () => {
               // разбиваем данные на отдельные части, тк без спред оператора
               // приходит вложенный массив, который мы не можем посмотреть
               state.url = '';
-              input.value = '';
-              input.focus();
               state.errors = [];
-              feedback.classList.remove('text-danger');
-              feedback.classList.add('text-success');
-              feedback.textContent = i18nextInstance.t('messages.success');
               state.status = 'success';
               checkForUpdates();
             } catch (error) {
