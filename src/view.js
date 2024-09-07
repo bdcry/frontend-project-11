@@ -172,6 +172,37 @@ const renderPosts = (state, i18nextInstance) => {
   divContainer.append(divPostCard);
 };
 
+const handleProcessState = (state, elements) => {
+  const { input, submitButton } = elements;
+  switch (state.status) {
+    case 'success':
+      submitButton.disabled = false;
+      input.disabled = false;
+      input.removeAttribute('readonly');
+
+      break;
+
+    case 'loading':
+      submitButton.disabled = true;
+      input.disabled = true;
+
+      input.setAttribute('readonly', true);
+
+      break;
+
+    case 'error':
+      submitButton.disabled = false;
+      input.disabled = false;
+
+      input.removeAttribute('readonly');
+
+      break;
+
+    default:
+      throw new Error(`Unknown state status of application: ${state.status}`);
+  }
+};
+
 const render = (state, elements, i18nextInstance) => {
   const watchedState = onChange(state, (path) => {
     switch (path) {
@@ -187,6 +218,9 @@ const render = (state, elements, i18nextInstance) => {
         break;
       case 'posts':
         renderPosts(state, i18nextInstance);
+        break;
+      case 'status':
+        handleProcessState(state, elements);
         break;
       default:
         break;

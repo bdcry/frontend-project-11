@@ -10,7 +10,6 @@ import resources from './locales/index.js';
 import parseRSS from './parser.js';
 
 const updateDelay = 5000;
-const buttonDisableDelay = 3000;
 
 const generateId = () => uuidv4();
 
@@ -59,23 +58,30 @@ const main = () => {
     return { title, description, posts: postsWithId };
   };
 
-  const state = {
+  const initialState = {
     currentLanguage: 'ru',
     url: '',
     errors: [],
     feeds: [], // добавленные ссылки для проверки дубликатов
     posts: [],
+    status: 'idle',
   };
 
   const input = document.getElementById('url-input');
   const form = document.querySelector('.rss-form');
   const feedback = document.querySelector('.feedback');
-  const elements = { input, form, feedback };
+  const submitButton = form.querySelector('button[type="submit"]');
+  const elements = {
+    input,
+    form,
+    feedback,
+    submitButton,
+  };
 
-  const view = render(state, elements, i18nextInstance);
+  const state = render(initialState, elements, i18nextInstance);
 
   const handleInputChange = (e) => {
-    view.url = e.target.value;
+    state.url = e.target.value;
   };
 
   const validate = (url, feeds) => {
@@ -87,7 +93,7 @@ const main = () => {
   };
 
   const checkForUpdates = () => {
-    const { posts, feeds } = state;
+    const { posts, feeds } = initialState;
 
     const fetchFeedUpdates = (feed) => {
       fetchRSS(feed.link)
@@ -95,7 +101,7 @@ const main = () => {
           const parsedData = parseRSS(
             fetchData,
             i18nextInstance,
-            view,
+            state,
           );
           if (parsedData) {
             const processedData = handleRSSData(parsedData);
@@ -106,12 +112,12 @@ const main = () => {
             );
 
             if (filteredPosts.length > 0) {
-              view.posts.push(...filteredPosts);
+              state.posts.push(...filteredPosts);
             }
           }
         })
         .catch((err) => {
-          view.errors = err.response;
+          state.errors = err.response;
         });
     };
     feeds.forEach((feed) => {
@@ -124,17 +130,17 @@ const main = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const sumbitDocBtn = form.querySelector('button[type="submit"]');
+    state.status = 'loading';
 
-    const { url, feeds } = view;
+    const { url, feeds } = state;
 
     validate(url, feeds)
       .then((errors) => {
         // Проверка валидации
         // если что-то не так, то будем собирать ошибки в состоянии
         if (Object.keys(errors).length > 0) {
-          view.errors = Object.values(errors).map((err) => err.message);
-          sumbitDocBtn.disabled = false;
+          state.errors = Object.values(errors).map((err) => err.message);
+          state.status = 'error';
           return;
         }
 
@@ -147,33 +153,31 @@ const main = () => {
               // Если все ок, то пушим в фиды и в посты наши данные
               const feed = { title, description, link: url };
               feeds.push(feed);
-              view.posts.push(...posts.flatMap((postArray) => postArray));
+              state.posts.push(...posts.flatMap((postArray) => postArray));
               // разбиваем данные на отдельные части, тк без спред оператора
               // приходит вложенный массив, который мы не можем посмотреть
-              view.url = '';
+              state.url = '';
               input.value = '';
               input.focus();
-              view.errors = [];
+              state.errors = [];
               feedback.classList.remove('text-danger');
               feedback.classList.add('text-success');
               feedback.textContent = i18nextInstance.t('messages.success');
+              state.status = 'success';
               checkForUpdates();
-              sumbitDocBtn.disabled = true;
-              setTimeout(() => {
-                sumbitDocBtn.disabled = false;
-              }, buttonDisableDelay);
             } catch (error) {
-              view.errors = i18nextInstance.t('errors.parserError');
+              state.errors = i18nextInstance.t('errors.parserError');
+              state.status = 'error';
             }
           })
           .catch((error) => {
-            view.errors = error.message;
-            sumbitDocBtn.disabled = false;
+            state.errors = error.message;
+            state.status = 'error';
           });
       })
       .catch((err) => {
-        view.errors = err.message;
-        sumbitDocBtn.disabled = false;
+        state.errors = err.message;
+        state.status = 'error';
       });
   };
 
@@ -182,12 +186,12 @@ const main = () => {
 
   document.querySelector('label[data-lng="ru"]').addEventListener('click', () => {
     i18nextInstance.changeLanguage('ru');
-    view.currentLanguage = 'ru';
+    state.currentLanguage = 'ru';
   });
 
   document.querySelector('label[data-lng="en"]').addEventListener('click', () => {
     i18nextInstance.changeLanguage('en');
-    view.currentLanguage = 'en';
+    state.currentLanguage = 'en';
   });
 };
 
