@@ -203,11 +203,10 @@ const handleProcessState = (state, elements, i18nextInstance) => {
       submitButton.disabled = false;
       input.disabled = false;
 
-      feedback.textContent = i18nextInstance.t('errors.parserError');
-
       input.focus();
       input.removeAttribute('readonly');
       feedback.classList.add('text-danger');
+      feedback.textContent = state.errors;
 
       break;
 
