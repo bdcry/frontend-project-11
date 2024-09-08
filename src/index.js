@@ -134,30 +134,36 @@ const main = () => {
     validate(url, feeds)
       .then((errors) => {
         if (Object.keys(errors).length > 0) {
-          state.errors = Object.values(errors).map((err) => err.message);
+          const errorMessages = Object.values(errors).map((err) => err.message);
+          state.errors = errorMessages;
           state.status = 'failed';
-          return Promise.reject(new Error('Validation Error'));
+          return Promise.reject(new Error(errorMessages.join(', ')));
         }
 
         return fetchRSS(url);
       })
       .then((fetchData) => {
-        const parsedData = parseRSS(fetchData);
-        const processedData = handleRSSData(parsedData);
-        const { title, description, posts } = processedData;
+        try {
+          const parsedData = parseRSS(fetchData);
+          const processedData = handleRSSData(parsedData);
+          const { title, description, posts } = processedData;
 
-        const feed = { title, description, link: url };
-        state.feeds.push(feed);
-        const processedPosts = posts.flatMap((postArray) => postArray);
-        state.posts.push(processedPosts);
+          const feed = { title, description, link: url };
+          state.feeds.push(feed);
+          const processedPosts = posts.flatMap((postArray) => postArray);
+          state.posts.push(processedPosts);
 
-        state.url = '';
-        state.errors = [];
-        state.status = 'success';
-        checkForUpdates();
+          state.url = '';
+          state.errors = [];
+          state.status = 'success';
+          checkForUpdates();
+        } catch (error) {
+          state.errors = i18nextInstance.t('errors.parserError');
+          state.status = 'failed';
+        }
       })
       .catch((error) => {
-        state.errors = error.message || i18nextInstance.t('errors.parserError');
+        state.errors = error.message;
         state.status = 'failed';
       });
   };

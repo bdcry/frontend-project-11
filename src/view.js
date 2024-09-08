@@ -191,7 +191,7 @@ const handleProcessState = (state, elements, i18nextInstance) => {
     case 'loading':
       submitButton.disabled = true;
       input.disabled = true;
-      feedback.innerHTML = '';
+      feedback.textContent = '';
 
       feedback.classList.remove('text-danger');
       feedback.classList.remove('text-success');
@@ -203,8 +203,11 @@ const handleProcessState = (state, elements, i18nextInstance) => {
       submitButton.disabled = false;
       input.disabled = false;
 
+      feedback.textContent = i18nextInstance.t('errors.parserError');
+
       input.focus();
       input.removeAttribute('readonly');
+      feedback.classList.add('text-danger');
 
       break;
 
