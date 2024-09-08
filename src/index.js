@@ -151,7 +151,7 @@ const main = () => {
           const feed = { title, description, link: url };
           state.feeds.push(feed);
           const processedPosts = posts.flatMap((postArray) => postArray);
-          state.posts.push(processedPosts);
+          state.posts.push(...processedPosts);
 
           state.url = '';
           state.errors = [];
