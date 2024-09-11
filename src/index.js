@@ -95,8 +95,6 @@ const main = () => {
       const checkForUpdates = () => {
         const { posts, feeds } = initialState;
 
-        console.log(`Обновление фидов в ${new Date().toLocaleTimeString()}`);
-
         const fetchFeedUpdates = (feed) => fetchRSS(feed.link)
           .then((fetchData) => {
             const parsedData = parseRSS(fetchData);
