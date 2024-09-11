@@ -64,6 +64,7 @@ const main = () => {
         feeds: [], // добавленные ссылки для проверки дубликатов
         posts: [],
         status: 'idle',
+        isUpdatingFeeds: false,
       };
 
       const input = document.getElementById('url-input');
@@ -94,6 +95,8 @@ const main = () => {
       const checkForUpdates = () => {
         const { posts, feeds } = initialState;
 
+        console.log(`Обновление фидов в ${new Date().toLocaleTimeString()}`);
+
         const fetchFeedUpdates = (feed) => fetchRSS(feed.link)
           .then((fetchData) => {
             const parsedData = parseRSS(fetchData);
@@ -122,6 +125,14 @@ const main = () => {
             throw new Error(`Error updating feeds: ${err}`);
           });
       };
+
+      const syncUpdatesForFeeds = () => {
+        if (!state.isUpdatingFeeds) {
+          state.isUpdatingFeeds = true;
+          checkForUpdates();
+        }
+      };
+
       const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -154,7 +165,7 @@ const main = () => {
               state.url = '';
               state.errors = [];
               state.status = 'success';
-              checkForUpdates();
+              syncUpdatesForFeeds();
             } catch (error) {
               state.errors = i18nextInstance.t('errors.parserError');
               state.status = 'failed';
