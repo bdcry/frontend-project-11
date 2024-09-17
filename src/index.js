@@ -1,5 +1,5 @@
-import './styles.scss';
 import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import * as yup from 'yup';
 import keyBy from 'lodash/keyBy.js';
 import i18next from 'i18next';
