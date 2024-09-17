@@ -136,15 +136,16 @@ const renderPosts = (state, i18nextInstance) => {
 
     const a = document.createElement('a');
     a.setAttribute('href', postAlone.link);
-    if (postAlone.read) {
-      a.classList.add('fw-normal', 'link-secondary');
-    } else {
-      a.classList.add('fw-bold');
-    }
     a.setAttribute('data-id', postAlone.id);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
     a.textContent = postAlone.title;
+
+    if (state.readPosts.includes(postAlone.id)) {
+      a.classList.add('fw-normal', 'link-secondary');
+    } else {
+      a.classList.add('fw-bold');
+    }
 
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
@@ -155,9 +156,8 @@ const renderPosts = (state, i18nextInstance) => {
     button.textContent = i18nextInstance.t('post_view');
     button.addEventListener('click', () => {
       renderModal(post);
-      // отмечаем пост , как просмотренный
-      // и добавляем статус true в состояние
-      postAlone.read = true;
+      // добавляем id поста в прочитанные
+      state.readPosts.push(postAlone.id);
       a.classList.remove('fw-bold');
       a.classList.add('fw-normal', 'link-secondary');
     });

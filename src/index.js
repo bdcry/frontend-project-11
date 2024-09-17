@@ -61,6 +61,7 @@ const main = async () => {
     errors: [],
     feeds: [],
     posts: [],
+    readPosts: [],
     status: 'idle',
     isUpdatingFeeds: false,
   };
